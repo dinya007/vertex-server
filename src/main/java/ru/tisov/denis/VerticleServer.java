@@ -2,9 +2,12 @@ package ru.tisov.denis;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import ru.tisov.denis.handler.TransferHandler;
+import ru.tisov.denis.service.TransferServiceFactory;
 
 /**
  * @author dinyat
@@ -23,6 +26,8 @@ public class VerticleServer extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> fut) {
+        Handler<RoutingContext> transferHandler = new TransferHandler(TransferServiceFactory.getTransferService());
+
         Router router = Router.router(vertx);
         vertx
             .createHttpServer()
@@ -35,17 +40,13 @@ public class VerticleServer extends AbstractVerticle {
                 }
             });
 
-        router.get("/transfer/:from/:to").handler(this::transfer);
-        router.get("/").handler(this::handleIndex);
+        router.get("/transfer/:from/:to").handler(transferHandler);
+        router.get("/").handler(this::index);
 
     }
 
-    private void handleIndex(RoutingContext routingContext) {
+    private void index(RoutingContext routingContext) {
         routingContext.response().end("<h1>Hello from my first Vert.x 3 application</h1>");
-    }
-
-    private void transfer(RoutingContext routingContext) {
-        routingContext.response().end("transfering...");
     }
 
 }
