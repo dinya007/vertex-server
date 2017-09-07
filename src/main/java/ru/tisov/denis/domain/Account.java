@@ -11,6 +11,11 @@ public class Account {
     private final long id;
     private BigDecimal balance;
 
+    private Account() {
+        this.id = 0;
+        this.balance = BigDecimal.ZERO;
+    }
+
     public Account(long id, BigDecimal balance) {
         this.id = id;
         this.balance = balance;

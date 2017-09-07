@@ -6,6 +6,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import ru.tisov.denis.dao.AccountDaoFactory;
+import ru.tisov.denis.handler.AccountHandler;
 import ru.tisov.denis.handler.TransferHandler;
 import ru.tisov.denis.service.TransferServiceFactory;
 
@@ -23,10 +25,15 @@ public class VerticleServer extends AbstractVerticle {
 //    http://vertx.io/docs/vertx-unit/java/
 //    http://vertx.io/docs/vertx-web/java/
 //    https://github.com/vert-x3/vertx-examples/blob/master/web-examples/src/main/java/io/vertx/example/web/rest/SimpleREST.java
+//    https://github.com/npryce/goos-code-examples/blob/master/testing-multithreaded-code/src/book/example/threading/races/MultithreadedStressTester.java
+
+//    Написать кастомные exception
+//    Продумать все fail пути
 
     @Override
     public void start(Future<Void> fut) {
         Handler<RoutingContext> transferHandler = new TransferHandler(TransferServiceFactory.getTransferService());
+        AccountHandler accountHandler = new AccountHandler(AccountDaoFactory.getAccountDao());
 
         Router router = Router.router(vertx);
         vertx
@@ -40,13 +47,13 @@ public class VerticleServer extends AbstractVerticle {
                 }
             });
 
-        router.get("/transfer/:from/:to").handler(transferHandler);
+        router.post("/account").handler(accountHandler::create);
+        router.post("/transfer").handler(transferHandler);
         router.get("/").handler(this::index);
-
     }
 
     private void index(RoutingContext routingContext) {
-        routingContext.response().end("<h1>Hello from my first Vert.x 3 application</h1>");
+        routingContext.response().end("<h1>It works!</h1>");
     }
 
 }

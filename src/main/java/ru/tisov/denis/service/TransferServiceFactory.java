@@ -8,12 +8,14 @@ import ru.tisov.denis.dao.AccountDaoFactory;
  */
 public class TransferServiceFactory {
 
+    private static DefaultTransferService transferService = new DefaultTransferService(AccountDaoFactory.getAccountDao());
+
     private TransferServiceFactory() {
         throw new IllegalStateException("This constructor shouldn't be called");
     }
 
     public static TransferService getTransferService() {
-        return new DefaultTransferService(AccountDaoFactory.getAccountDao());
+        return transferService;
     }
 
 }

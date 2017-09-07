@@ -19,7 +19,7 @@ class DefaultTransferService implements TransferService {
     }
 
     @Override
-    public synchronized void transfer(long sourceAccountId, long destinationAccountId, BigDecimal amount) {
+    public void transfer(long sourceAccountId, long destinationAccountId, BigDecimal amount) {
         if (amount == null) {
             throw new IllegalArgumentException("You should specify transfer amount");
         }
@@ -27,7 +27,27 @@ class DefaultTransferService implements TransferService {
         Account sourceAccount = accountDao.get(sourceAccountId);
         Account destinationAccount = accountDao.get(destinationAccountId);
 
-        sourceAccount.subtractBalance(amount);
-        destinationAccount.addBalance(amount);
+        Account firstMonitor;
+        Account secondMonitor;
+        if (sourceAccountId < destinationAccountId) {
+            firstMonitor = sourceAccount;
+            secondMonitor = destinationAccount;
+        } else {
+            firstMonitor = destinationAccount;
+            secondMonitor = sourceAccount;
+        }
+
+        synchronized (firstMonitor) {
+            synchronized (secondMonitor) {
+                if (sourceAccount.getBalance().compareTo(amount) < 0) {
+                    throw new IllegalStateException("Source account doesn't have enough money");
+                }
+
+                sourceAccount.subtractBalance(amount);
+                destinationAccount.addBalance(amount);
+            }
+        }
+
+
     }
 }

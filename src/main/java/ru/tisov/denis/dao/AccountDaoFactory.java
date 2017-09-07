@@ -6,12 +6,14 @@ package ru.tisov.denis.dao;
  */
 public class AccountDaoFactory {
 
+    private static final AccountDao accountDao = new InMemoryAccountDao();
+
     private AccountDaoFactory() {
         throw new IllegalStateException("This constructor shouldn't be called");
     }
 
     public static AccountDao getAccountDao() {
-        return new InMemoryAccountDao();
+        return accountDao;
     }
 
 }
