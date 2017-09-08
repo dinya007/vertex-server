@@ -21,15 +21,6 @@ public class VerticleServer extends AbstractVerticle {
         Vertx.vertx().deployVerticle(VerticleServer.class.getName(), System.out::println);
     }
 
-//    http://vertx.io/docs/vertx-core/java/#_writing_http_servers_and_clients
-//    http://vertx.io/docs/vertx-unit/java/
-//    http://vertx.io/docs/vertx-web/java/
-//    https://github.com/vert-x3/vertx-examples/blob/master/web-examples/src/main/java/io/vertx/example/web/rest/SimpleREST.java
-//    https://github.com/npryce/goos-code-examples/blob/master/testing-multithreaded-code/src/book/example/threading/races/MultithreadedStressTester.java
-
-//    Написать кастомные exception
-//    Продумать все fail пути
-
     @Override
     public void start(Future<Void> fut) {
         Handler<RoutingContext> transferHandler = new TransferHandler(TransferServiceFactory.getTransferService());
