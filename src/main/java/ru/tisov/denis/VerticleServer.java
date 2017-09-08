@@ -22,7 +22,7 @@ public class VerticleServer extends AbstractVerticle {
     }
 
     @Override
-    public void start(Future<Void> fut) {
+    public void start(Future<Void> future) {
         Handler<RoutingContext> transferHandler = new TransferHandler(TransferServiceFactory.getTransferService());
         AccountHandler accountHandler = new AccountHandler(AccountDaoFactory.getAccountDao());
 
@@ -32,9 +32,9 @@ public class VerticleServer extends AbstractVerticle {
             .requestHandler(router::accept)
             .listen(8080, result -> {
                 if (result.succeeded()) {
-                    fut.complete();
+                    future.complete();
                 } else {
-                    fut.fail(result.cause());
+                    future.fail(result.cause());
                 }
             });
 
