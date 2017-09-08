@@ -7,6 +7,8 @@ import ru.tisov.denis.service.TransferService;
 
 import java.math.BigDecimal;
 
+import static ru.tisov.denis.utils.StringUtils.isEmpty;
+
 /**
  * @author dinyat
  * 06/09/2017
@@ -21,9 +23,18 @@ public class TransferHandler implements Handler<RoutingContext> {
 
     @Override
     public void handle(RoutingContext routingContext) {
-        Long fromAccountId = Long.valueOf(routingContext.request().getParam("from"));
-        Long toAccountId = Long.valueOf(routingContext.request().getParam("to"));
-        BigDecimal amount = BigDecimal.valueOf(Double.valueOf(routingContext.request().getParam("amount")));
+        String fromParam = routingContext.request().getParam("from");
+        String toParam = routingContext.request().getParam("to");
+        String amountParam = routingContext.request().getParam("amount");
+
+        if (!checkParams(fromParam, toParam, amountParam)) {
+            routingContext.response().setStatusCode(HttpResponseStatus.BAD_REQUEST.code()).end();
+            return;
+        }
+
+        Long fromAccountId = Long.valueOf(fromParam);
+        Long toAccountId = Long.valueOf(toParam);
+        BigDecimal amount = BigDecimal.valueOf(Double.valueOf(amountParam));
 
         try {
             transferService.transfer(fromAccountId, toAccountId, amount);
@@ -33,4 +44,9 @@ public class TransferHandler implements Handler<RoutingContext> {
         }
 
     }
+
+    private boolean checkParams(String to, String from, String amount) {
+        return !isEmpty(to) && !isEmpty(from) && !isEmpty(amount);
+    }
+
 }

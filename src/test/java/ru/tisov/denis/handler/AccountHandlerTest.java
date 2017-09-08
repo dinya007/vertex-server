@@ -1,8 +1,9 @@
-package ru.tisov.denis;
+package ru.tisov.denis.handler;
 
 import io.vertx.core.json.Json;
 import io.vertx.ext.unit.TestContext;
 import org.junit.Test;
+import ru.tisov.denis.AbstractTest;
 import ru.tisov.denis.domain.Account;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
  * @author dinyat
  * 07/09/2017
  */
-public class AccountTest extends AbstractTest {
+public class AccountHandlerTest extends AbstractTest {
 
     @Test
     public void testCreateAccountWithoutInitialBalance(TestContext context) {
